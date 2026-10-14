@@ -133,3 +133,13 @@ custom_fields_011:
   default_value: false
   editable: true
   position: 1
+custom_fields_012:
+  name: reopen-issues-with
+  visible: true
+  type: ProjectCustomField
+  id: 12
+  is_required: false
+  field_format: string
+  default_value: ""
+  editable: true
+  position: 1

@@ -28,4 +28,7 @@ end
 
 class ActiveSupport::TestCase
   self.fixture_path = TestHelper.fixture_path
+  # Redmine >= 5.1 declares "fixtures :all" for the core fixtures,
+  # which do not exist in our fixture_path
+  self.fixture_table_names = []
 end
