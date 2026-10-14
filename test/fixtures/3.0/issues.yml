@@ -7,7 +7,7 @@ issues_001:
   subject: Can't print recipes
   id: 1
   fixed_version_id:
-  category_id: 1
+  category_id:
   description: Unable to print recipes
   tracker_id: 1
   assigned_to_id: 1
