@@ -1,0 +1,11 @@
+<p>
+  <label for="settings_subject_prefix"><%= l(:label_helpdesk_subject_prefix) %></label>
+  <%= text_field_tag 'settings[subject_prefix]', settings['subject_prefix'], :size => 20 %>
+  <em class="info"><%= l(:text_helpdesk_subject_prefix) %></em>
+</p>
+<p>
+  <label for="settings_own_host_only"><%= l(:label_helpdesk_own_host_only) %></label>
+  <%= hidden_field_tag 'settings[own_host_only]', '0', :id => nil %>
+  <%= check_box_tag 'settings[own_host_only]', '1', settings['own_host_only'].to_s != '0' %>
+  <em class="info"><%= l(:text_helpdesk_own_host_only, :host => RedmineHelpdesk::SubjectPrefix.own_host) %></em>
+</p>

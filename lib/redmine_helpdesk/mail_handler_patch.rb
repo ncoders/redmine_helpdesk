@@ -4,6 +4,8 @@ module RedmineHelpdesk
       base.send(:include, InstanceMethods)
 
       base.class_eval do
+        alias_method :dispatch_without_helpdesk, :dispatch
+        alias_method :dispatch, :dispatch_with_helpdesk
         alias_method :dispatch_to_default_without_helpdesk, :dispatch_to_default
         alias_method :dispatch_to_default, :dispatch_to_default_with_helpdesk
         # needed for reopening a closed issue
@@ -13,7 +15,47 @@ module RedmineHelpdesk
     end
 
     module InstanceMethods
+      # MailHandler::MissingContainer exists since Redmine 5.1
+      MISSING_CONTAINER = defined?(MailHandler::MissingContainer) ? [MailHandler::MissingContainer] : []
+
       private
+      # Overrides the dispatch method to only accept issue references
+      # with the configured subject prefix and, optionally, Message-IDs
+      # of this Redmine. Same as the original method otherwise.
+      def dispatch_with_helpdesk
+        return dispatch_without_helpdesk unless SubjectPrefix.enabled?
+
+        headers = [email.in_reply_to, email.references].flatten.compact
+        subject = email.subject.to_s
+        if headers.detect {|h| h.to_s =~ SubjectPrefix.message_id_re}
+          klass, object_id = $1, $2.to_i
+          method_name = "receive_#{klass}_reply"
+          if self.class.private_instance_methods.collect(&:to_s).include?(method_name)
+            send method_name, object_id
+          else
+            # ignoring it
+          end
+        elsif m = subject.match(SubjectPrefix.issue_reply_subject_re)
+          receive_issue_reply(m[1].to_i)
+        elsif m = subject.match(MailHandler::MESSAGE_REPLY_SUBJECT_RE)
+          receive_message_reply(m[1].to_i)
+        else
+          dispatch_to_default
+        end
+      rescue ActiveRecord::RecordInvalid => e
+        logger&.error "MailHandler: #{e.message}"
+        false
+      rescue MailHandler::MissingInformation => e
+        logger&.error "MailHandler: missing information from #{user}: #{e.message}"
+        false
+      rescue *MISSING_CONTAINER => e
+        logger&.error "MailHandler: reply to nonexistant object from #{user}: #{e.message}"
+        false
+      rescue MailHandler::UnauthorizedAction => e
+        logger&.error "MailHandler: unauthorized attempt from #{user}: #{e.message}"
+        false
+      end
+
       # Overrides the dispatch_to_default method to
       # set the owner-email of a new issue created by
       # an email request

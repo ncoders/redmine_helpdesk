@@ -1,3 +1,7 @@
 en:
   label_support_checkbox: "Send mail to supportclient"
   email_was_send_to_supportclient: "This answer was sent to the supportclient."
+  label_helpdesk_subject_prefix: "Subject prefix"
+  text_helpdesk_subject_prefix: "Issue references in mail subjects become [PREFIX #1234]. Incoming mails only update an issue if the subject carries this prefix, so references of other ticket systems like [Other #1234] are ignored. Leave empty to keep the standard Redmine behaviour."
+  label_helpdesk_own_host_only: "Only accept own Message-IDs"
+  text_helpdesk_own_host_only: "With a subject prefix set, In-Reply-To and References headers are only used if the Message-ID ends in @%{host} (taken from the emission email address)."

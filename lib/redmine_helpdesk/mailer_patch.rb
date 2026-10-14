@@ -4,12 +4,25 @@ module RedmineHelpdesk
       base.send(:include, InstanceMethods)
       
       base.class_eval do
+        alias_method :issue_add_without_helpdesk, :issue_add
+        alias_method :issue_add, :issue_add_with_helpdesk
         alias_method :issue_edit_without_helpdesk, :issue_edit
         alias_method :issue_edit, :issue_edit_with_helpdesk
       end
     end
 
     module InstanceMethods
+      # Overrides the issue_add method to use the subject
+      # tag with the configured prefix
+      def issue_add_with_helpdesk(user, issue)
+        issue_add_without_helpdesk(user, issue)
+        core_tag = SubjectPrefix.core_tag(issue)
+        if message.subject.to_s.start_with?(core_tag)
+          message.subject = SubjectPrefix.internal_tag(issue) + message.subject.to_s[core_tag.length..]
+        end
+        message
+      end
+
       # Overrides the issue_edit method which is only
       # be called on existing tickets. We will add the
       # owner-email to the recipients only if no email-
@@ -63,7 +76,7 @@ module RedmineHelpdesk
           Rails.logger.error "Error while adding cc-users to recipients of email notification: \"#{e.message}\"."
         end
 
-        s = "[#{issue.project.name} - #{issue.tracker.name} ##{issue.id}] "
+        s = "#{SubjectPrefix.internal_tag(issue)} "
         s += "(#{issue.status.name}) " if journal.new_value_for('status_id') && Setting.show_status_changes_in_mail_subject?
         s += issue.subject
         u = (alternative_user.present? ? alternative_user : user)

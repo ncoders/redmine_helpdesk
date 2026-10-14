@@ -2,6 +2,7 @@ require 'redmine'
 $LOAD_PATH.unshift "#{File.dirname(__FILE__)}/lib"
 require 'helpdesk_hooks'
 require 'helpdesk_mailer'
+require 'redmine_helpdesk/subject_prefix'
 require 'redmine_helpdesk/journal_patch'
 require 'redmine_helpdesk/mail_handler_patch'
 require 'redmine_helpdesk/mailer_patch'
@@ -10,8 +11,12 @@ Redmine::Plugin.register :redmine_helpdesk do
   name 'Redmine helpdesk plugin'
   author 'Stefan Husch'
   description 'Redmine helpdesk plugin'
-  version '0.0.20'
+  version '0.0.21'
   requires_redmine :version_or_higher => '5.0.0'
+  settings :default => {
+    'subject_prefix' => '',
+    'own_host_only'  => '1'
+  }, :partial => 'settings/redmine_helpdesk'
   project_module :issue_tracking do
     permission :treat_user_as_supportclient, {}
   end

@@ -1,3 +1,9 @@
+0.0.21
+---
+* Configurable subject prefix for issue references, e.g. [ACME #1234] (Redmine #18668)
+* Optionally only accept own Message-IDs in In-Reply-To/References headers
+* Make test suite run on Redmine 5.0 and 5.1
+
 0.0.20
 ---
 * Make plugin compatibility with Redmine 5.0.x

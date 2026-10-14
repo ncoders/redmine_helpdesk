@@ -2,3 +2,7 @@ de:
   label_support_checkbox: "E-Mail an Support-Anfragenden senden"
   email_was_send_to_supportclient: "Diese Antwort wurde an den Support-Anfragenden gesendet."
   permission_treat_user_as_supportclient: "Nutzer als Support-Anfragenden behandeln"
+  label_helpdesk_subject_prefix: "Betreff-Präfix"
+  text_helpdesk_subject_prefix: "Ticket-Referenzen im E-Mail-Betreff werden zu [PRÄFIX #1234]. Eingehende E-Mails aktualisieren ein Ticket nur, wenn der Betreff dieses Präfix enthält; Referenzen anderer Ticket-Systeme wie [Andere #1234] werden ignoriert. Leer lassen für das Standardverhalten von Redmine."
+  label_helpdesk_own_host_only: "Nur eigene Message-IDs akzeptieren"
+  text_helpdesk_own_host_only: "Ist ein Betreff-Präfix gesetzt, werden In-Reply-To- und References-Header nur verwendet, wenn die Message-ID auf @%{host} endet (aus der Absender-E-Mail-Adresse der Benachrichtigungen)."

@@ -30,7 +30,7 @@ class HelpdeskMailer < ActionMailer::Base
     message_id issue
     references issue
 
-    subject = "[#{issue.project.name} - ##{issue.id}] #{issue.subject}"
+    subject = "#{RedmineHelpdesk::SubjectPrefix.customer_tag(issue)} #{issue.subject}"
     # Set 'from' email-address to 'helpdesk-sender-email' if available.
     # Falls back to regular redmine behaviour if 'sender' is empty.
     p = issue.project
